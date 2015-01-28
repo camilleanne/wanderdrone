@@ -1,11 +1,9 @@
 function wanderdrone_init(debug){
-
-	var base_template = 'http://example.com/layer/{Z}/{X}/{Y}.png';
-	var base_layer = new MM.TemplatedLayer(base_template);
-
-	var map = new MM.Map('map', base_layer);
-
-	map.setZoomRange(3, 14);
+	L.mapbox.accessToken = 'YOUR_ACCESS_TOKEN';
+	var map = L.mapbox.map('map', 'camilleanne.l2if0e7g')
+    
+	L.map.minZoom = 5;
+	L.map.mazZoom = 14;
 
 	var lat = random_latitude();
 	var lon = random_longitude();
@@ -17,8 +15,7 @@ function wanderdrone_init(debug){
 		zoom = 11;
 	}
 
-	var center = new MM.Location(lat, lon);
-	map.setCenterZoom(center, zoom);
+	map.setView([lat, lon], zoom);
 
 	var max_lat;
 	var min_lat;
@@ -36,19 +33,19 @@ function wanderdrone_init(debug){
 
 		timeout_move = setTimeout(function(){
 
-			map.panBy(x, y);
+			map.panBy([x * -2, y * -2]);
 
 			var center = map.getCenter();
 			var zoom = map.getZoom();
 
-			if (center.lon > 180){
-				center.lon = -180;
-				map.setCenter(center);
+			if (center.lng > 180){
+				center.lng = -180;
+				map.setView(center);
 			}
 
-			if (center.lon < -180){
-				center.lon = 180;
-				map.setCenter(center);
+			if (center.lng < -180){
+				center.lng = 180;
+				map.setView(center);
 			}
 
 			if ((center.lat >= max_lat) || (center.lat <= min_lat)){
@@ -58,7 +55,7 @@ function wanderdrone_init(debug){
 
 			var coords = document.getElementById("coords");
 
-			var html = center.lat + "<br />" + center.lon;
+			var html = center.lat + "<br />" + center.lng;
 			//html += "<br />@ zoom " + zoom;
 
 			coords.innerHTML = html;
@@ -109,8 +106,8 @@ function wanderdrone_init(debug){
 		var zoom_by = Math.random() * 2;
 		zoom_by = parseInt(zoom_by);
 
-		zoom_by = (random_boolean()) ? zoom_by : - zoom_by;
-		map.zoomBy(zoom_by);
+		if (random_boolean()) map.zoomIn(zoom_by);
+		else map.zoomOut(zoom_by);
 
 		timeout_set_direction = setTimeout(set_direction, delay);
 
@@ -215,47 +212,4 @@ function random_coordinate(max){
 function random_boolean(){
 	var dt = new Date();
 	return (dt.getTime() % 2) ? 1 : 0;
-}
-
-/* tilestache */
-
-function tilestache_static_provider(template){
-
-	var provider = new MM.MapProvider(function(c){
-
-		function pad(s, n, c){
-			var m = n - s.length;
-			return (m < 1) ? s : new Array(m + 1).join(c) + s;
-		}
-
-		function format(i){
-			var s = pad(String(i), 6, "0");
-			return s.substr(0, 3) + "/" + s.substr(3);
-		}
-
-		var max = 1 << c.zoom, column = c.column % max;
-
-		if (column < 0){
-			column += max;
-		}
-
-		var z = c.zoom;
-		var x = format(column);
-		var y = format(c.row);
-
-		var path = [ z, x, y ].join('/') + '.png';
-
-		return template.replace(/{(.)}/g, function(s, v) {
-                	switch (v) {
-				case "Z": return c.zoom;
-				case "X": return format(column);
-				case "Y": return format(c.row);
-			}
-
-			return v;
-		});
-
-	});
-
-	return new MM.Layer(provider);
 }

@@ -10,7 +10,7 @@ body {
     }
 
 #drone {
-	background-image:url('drone-sm.png');
+	background-image:url('./img/drone-sm.png');
 	background-repeat:none;
 	position:absolute;
 	top: 45%;
