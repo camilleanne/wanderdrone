@@ -1,0 +1,18 @@
+{
+  "name": "wanderdrone",
+  "version": "0.0.0",
+  "description": "A wandering drone for sending instrumentile events.",
+  "main": "wanderdrone.js",
+  "scripts": {
+    "start": "watchify --standalone instrumentile ./node_modules/instrumentile/instrumentile.js -o ./lib/instrumentile.js & serve"
+  },
+  "author": "",
+  "devDependencies": {
+    "browserify": "^8.1.1",
+    "watchify": "^2.3.0",
+    "serve": "^1.4.0"
+  },
+  "dependencies": {
+    "instrumentile": "https://mapbox-npm.s3.amazonaws.com/package/instrumentile-0.0.1-6574fc7233c3f5cfbb4c32e0baca78984123339d.tgz"
+  }
+}
