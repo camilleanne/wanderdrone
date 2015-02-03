@@ -1,7 +1,13 @@
 function wanderdrone_init(debug){
-	L.mapbox.accessToken = 'YOUR_ACCESS_TOKEN';
-	var map = L.mapbox.map('map', 'camilleanne.l2if0e7g')
-    
+	L.mapbox.accessToken = 'pk.eyJ1IjoiY2FtaWxsZWFubmUiLCJhIjoiN0pleXVXTSJ9.olk86fBWmW6kFpmyFfTDqw';
+	var map = L.mapbox.map('map', 'camilleanne.l2if0e7g');
+
+	// Instrumentile + config:
+	var endpoint = 'http://cloudfront-staging.tilestream.net/metrics/v1/report';
+	// change how fast wanderdrone moves around the map and zooms (1 is 'normal', 10 is 10x)
+	var speed = 10;
+	instrumentile(map.tileLayer, endpoint, {log: true});
+
 	L.map.minZoom = 5;
 	L.map.mazZoom = 14;
 
@@ -33,7 +39,7 @@ function wanderdrone_init(debug){
 
 		timeout_move = setTimeout(function(){
 
-			map.panBy([x * -2, y * -2]);
+			map.panBy([x * -speed, y * -speed]);
 
 			var center = map.getCenter();
 			var zoom = map.getZoom();
